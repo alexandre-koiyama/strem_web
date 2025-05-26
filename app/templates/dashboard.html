@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+        <a class="navbar-brand" href="#">Camera Dashboard</a>
+        <div class="ms-auto">
+            <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <h2>Welcome, {{ username }}</h2>
+
+        <!-- Camera Add Form -->
+        <div class="card my-4">
+            <div class="card-body">
+                <h5 class="card-title">Register New Camera</h5>
+                <form method="post" action="/dashboard/add_camera">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <input type="text" name="name" placeholder="Camera Name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="url" placeholder="Camera URL or Stream Link" class="form-control" required>
+                        </div>
+                        <div class="col-md-2 d-grid">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Camera Cards -->
+        <div class="row">
+            {% for camera in cameras %}
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ camera.name }}</h5>
+                        <p class="card-text text-truncate">{{ camera.url }}</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ camera.url }}" target="_blank" class="btn btn-outline-primary btn-sm">View</a>
+                            <form method="post" action="/dashboard/delete_camera/{{ camera.id }}" style="display:inline;">
+                                <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this camera?')">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p>No cameras registered yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
