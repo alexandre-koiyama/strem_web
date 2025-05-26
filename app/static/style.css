@@ -1,0 +1,140 @@
+:root {
+    --primary-color: #007bff; /* A vibrant blue */
+    --secondary-color: #6c757d; /* A muted gray */
+    --accent-color: #28a745; /* A subtle green for success/accent */
+    --background-light: #f8f9fa; /* Light background */
+    --background-dark: #343a40; /* Dark background for navbar */
+    --text-color-dark: #212529; /* Dark text */
+    --text-color-light: #f8f9fa; /* Light text */
+    --card-bg: #ffffff; /* Card background */
+    --card-shadow: rgba(0, 0, 0, 0.05);
+}
+
+body {
+    font-family: sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-color-dark);
+    line-height: 1.6;
+}
+
+.navbar {
+    background-color: var(--background-dark) !important;
+    color: var(--text-color-light);
+}
+
+.navbar-brand {
+    color: var(--text-color-light) !important;
+    font-weight: bold;
+}
+
+.navbar .btn-danger {
+    background-color: #dc3545; /* Bootstrap's default danger, keep for contrast */
+    border-color: #dc3545;
+    color: var(--text-color-light);
+}
+
+.container {
+    max-width: 1200px;
+}
+
+h2, h4, h5 {
+    color: var(--text-color-dark);
+}
+
+.card {
+    background-color: var(--card-bg);
+    border: none;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem var(--card-shadow);
+}
+
+.card-title {
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+}
+
+.form-control {
+    border-radius: 0.25rem;
+    border-color: #ced4da;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn {
+    border-radius: 0.25rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--text-color-light);
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-success {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: var(--text-color-light);
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color-light);
+}
+
+.btn-outline-danger {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: var(--text-color-light);
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar .ms-auto {
+        margin-left: 0 !important;
+        margin-top: 0.5rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    .navbar .ms-auto .btn {
+        width: 100%;
+    }
+
+    .card .row.g-2 > div {
+        margin-bottom: 0.5rem;
+    }
+}
