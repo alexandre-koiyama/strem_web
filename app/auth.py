@@ -21,7 +21,9 @@ def create_user(db: Session, user: schemas.UserCreate):
 
 def authenticate_user(db: Session, email: str, password: str):
     user = db.query(models.User).filter(models.User.email == email).first()
-    if not user or not verify_password(password, user.hashed_password):
+    if not user:
+        # Avoid leaking information about email existence
+        return None
+    if not verify_password(password, user.hashed_password):
         return None
     return user
-

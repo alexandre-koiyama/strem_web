@@ -6,12 +6,16 @@ from app import auth, models, schemas
 from ..database import SessionLocal, engine
 from fastapi.templating import Jinja2Templates
 from app.auth import authenticate_user
+from pydantic import EmailStr, ValidationError
+import os
 
 
 models.Base.metadata.create_all(bind=engine)
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
+
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-key")
 
 def get_db():
     db = SessionLocal()
@@ -46,6 +50,11 @@ async def register_page(request: Request):
 
 @router.post("/register")
 async def register(request: Request, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+    try:
+        form = schemas.UserCreate(email=email, password=password)
+    except ValidationError as e:
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Invalid email or password."})
+
     existing_user = db.query(models.User).filter(models.User.email == email).first()
     if existing_user:
         return templates.TemplateResponse("register.html", {"request": request, "error": "User already exists"})

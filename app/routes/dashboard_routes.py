@@ -21,8 +21,16 @@ def get_db():
 # Dashboard Page
 @router.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request, db: Session = Depends(get_db)):
-    # In a real app, filter cameras by logged-in user
-    cameras = db.query(models.Camera).all()
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return RedirectResponse(url="/login", status_code=302)
+
+    cameras = (
+        db.query(models.Camera)
+        .filter(models.Camera.user_id == user_id)
+        .order_by(models.Camera.group, models.Camera.name)
+        .all()
+    )
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
         "cameras": cameras
@@ -30,16 +38,52 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
 
 
 # Add new camera
-@router.post("/add_camera")
+@router.post("/dashboard/add_camera")
 async def add_camera(
     request: Request,
     name: str = Form(...),
     stream_url: str = Form(...),
+    group: str = Form(...),
     db: Session = Depends(get_db)
 ):
-    # TODO: Replace with real user_id from session/token
-    dummy_user_id = 1
-    camera = models.Camera(name=name, stream_url=stream_url, user_id=dummy_user_id)
+    if not name or not stream_url or not group:
+        return RedirectResponse(url="/dashboard", status_code=400)
+
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return RedirectResponse(url="/login", status_code=302)
+
+    camera = models.Camera(name=name, stream_url=stream_url, group=group, user_id=user_id)
     db.add(camera)
     db.commit()
     return RedirectResponse(url="/dashboard", status_code=302)
+
+
+# Delete camera
+@router.post("/dashboard/delete_camera/{camera_id}")
+async def delete_camera(camera_id: int, request: Request, db: Session = Depends(get_db)):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        return RedirectResponse(url="/login", status_code=302)
+    camera = db.query(models.Camera).filter(models.Camera.id == camera_id, models.Camera.user_id == user_id).first()
+    if camera:
+        db.delete(camera)
+        db.commit()
+    return RedirectResponse(url="/dashboard", status_code=302)
+
+
+# Billing Page
+@router.get("/billing", response_class=HTMLResponse)
+async def billing(request: Request):
+    username = "User"  # Replace with actual username if available
+    return templates.TemplateResponse("billing.html", {"request": request, "username": username})
+
+
+@router.post("/billing/upgrade")
+async def billing_upgrade(request: Request):
+    form = await request.form()
+    plan = form.get("plan")
+    # Here you would handle the plan upgrade logic (demo only)
+    username = "User"
+    msg = f"Plan upgrade to '{plan}' requested (demo only)."
+    return templates.TemplateResponse("billing.html", {"request": request, "username": username, "msg": msg})

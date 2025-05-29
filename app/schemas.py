@@ -1,9 +1,9 @@
 # app/schemas.py
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, constr
 
 class UserCreate(BaseModel):
-    email: str
-    password: str
+    email: EmailStr
+    password: constr(min_length=8)  # Enforce minimum password length
 
 class UserLogin(BaseModel):
     email: str
